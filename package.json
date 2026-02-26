@@ -1,0 +1,61 @@
+{
+  "name": "vscode-fs",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "VSCode like simple、serializable and cross-platform file system utilities.",
+  "author": "Naily Zero <zero@naily.cc> (https://naily.cc)",
+  "license": "MIT",
+  "homepage": "https://github.com/groupguanfang/vscode-fs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/groupguanfang/vscode-fs"
+  },
+  "bugs": {
+    "url": "https://github.com/groupguanfang/vscode-fs/issues",
+    "email": "zero@naily.cc"
+  },
+  "keywords": [
+    "vscode",
+    "file system",
+    "serializable",
+    "cross-platform"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "types": {
+        "import": "./dist/index.d.mts",
+        "require": "./dist/index.d.cts"
+      },
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.cts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown --dts --format esm,cjs src/index.ts",
+    "test": "vitest --coverage --ui",
+    "lint": "eslint ."
+  },
+  "peerDependencies": {
+    "vscode-uri": "^3.1.0"
+  },
+  "dependencies": {
+    "trash": "^10.1.1"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.8",
+    "@types/node": "^25.3.2",
+    "naily-eslint-config": "^0.0.1",
+    "tsdown": "0.21.0-beta.2"
+  }
+}
