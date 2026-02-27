@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.0.3
+
+### Patch Changes
+
+- cc20d32: chore: update prepublishOnly
+
 ## 0.0.2
 
 ### Patch Changes
