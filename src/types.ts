@@ -123,6 +123,42 @@ export interface FileSystem {
      */
     overwrite?: boolean
   }): Promise<void>
+
+  /**
+   * Check if a file exists.
+   *
+   * @param uri The uri of the file.
+   * @returns True if the file exists, false otherwise.
+   * @throws It will not throw any errors if the file does not exist.
+   */
+  isFile(uri: Uri): Promise<IsFile | false>
+
+  /**
+   * Check if a directory exists.
+   *
+   * @param uri The uri of the directory.
+   * @returns True if the directory exists, false otherwise.
+   * @throws It will not throw any errors if the directory does not exist.
+   */
+  isDirectory(uri: Uri): Promise<IsDirectory | false>
+
+  /**
+   * Check if a symbolic link exists.
+   *
+   * @param uri The uri of the symbolic link.
+   * @returns True if the symbolic link exists, false otherwise.
+   * @throws It will not throw any errors if the symbolic link does not exist.
+   */
+  isSymbolicLink(uri: Uri): Promise<IsSymbolicLink | false>
+
+  /**
+   * Check if the path is exists.
+   *
+   * @param uri The uri of the file, directory, or symbolic link.
+   * @returns True if the file, directory, or symbolic link exists, false otherwise.
+   * @throws It will not throw any errors if the file, directory, or symbolic link does not exist.
+   */
+  exists(uri: Uri): Promise<FileStat | false>
 }
 
 /**
@@ -157,6 +193,10 @@ export interface FileStat {
    */
   size: number
 }
+
+export type IsFile = Omit<FileStat, 'type'> & { type: FileType.File }
+export type IsDirectory = Omit<FileStat, 'type'> & { type: FileType.Directory }
+export type IsSymbolicLink = Omit<FileStat, 'type'> & { type: FileType.SymbolicLink }
 
 /**
  * A type that filesystem providers should use to signal errors.

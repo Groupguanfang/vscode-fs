@@ -123,5 +123,64 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
       const overwrite = options?.overwrite !== false
       await copyRecursive(source.fsPath, target.fsPath, overwrite)
     }),
+    isFile: async (uri) => {
+      try {
+        const { type, stats } = await resolveFileType(uri.fsPath)
+        if (type !== FileType.File) return false
+        return {
+          type,
+          ctime: stats.birthtime.getTime(),
+          mtime: stats.mtime.getTime(),
+          size: stats.size,
+        }
+      }
+      catch {
+        return false
+      }
+    },
+    isDirectory: async (uri) => {
+      try {
+        const { type, stats } = await resolveFileType(uri.fsPath)
+        if (type !== FileType.Directory) return false
+        return {
+          type,
+          ctime: stats.birthtime.getTime(),
+          mtime: stats.mtime.getTime(),
+          size: stats.size,
+        }
+      }
+      catch {
+        return false
+      }
+    },
+    isSymbolicLink: async (uri) => {
+      try {
+        const { type, stats } = await resolveFileType(uri.fsPath)
+        if (type !== FileType.SymbolicLink) return false
+        return {
+          type,
+          ctime: stats.birthtime.getTime(),
+          mtime: stats.mtime.getTime(),
+          size: stats.size,
+        }
+      }
+      catch {
+        return false
+      }
+    },
+    exists: async (uri) => {
+      try {
+        const { type, stats } = await resolveFileType(uri.fsPath)
+        return {
+          type,
+          ctime: stats.birthtime.getTime(),
+          mtime: stats.mtime.getTime(),
+          size: stats.size,
+        }
+      }
+      catch {
+        return false
+      }
+    },
   }
 }
