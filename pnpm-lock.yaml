@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      tinyglobby:
+        specifier: ^0.2.15
+        version: 0.2.15
       trash:
         specifier: ^10.1.1
         version: 10.1.1

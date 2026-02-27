@@ -159,6 +159,73 @@ export interface FileSystem {
    * @throws It will not throw any errors if the file, directory, or symbolic link does not exist.
    */
   exists(uri: Uri): Promise<FileStat | false>
+
+  /**
+   * Glob files by pattern.
+   *
+   * @param globPattern The glob pattern.
+   * @param options The options for the glob.
+   * @param options.onlyFiles Only include files in the results. Default is `true`.
+   * @param options.onlyDirectories Only include directories in the results. Default is `false`.
+   * @param options.followSymbolicLinks Follow symbolic links in the results. Default is `true`.
+   * @param options.ignore Ignore files in the results. Default is `[]`.
+   * @param options.dot Include files and directories that start with a dot like `.gitignore`. Default is `true`.
+   * @param options.expandDirectories Whether to automatically expand directory patterns. Default is `true`. Important to disable if migrating from [`fast-glob`](https://github.com/mrmlnc/fast-glob).
+   * @param options.extglob Enables support for extglobs, like `+(pattern)`. Default is `true`.
+   * @param options.deep Maximum directory depth to crawl. Default is `Infinity`.
+   * @returns An array of file uris.
+   */
+  glob(globPattern: RelativePattern, options?: {
+    /**
+     * Only include files in the results.
+     *
+     * @default true
+     */
+    onlyFiles?: boolean
+    /**
+     * Only include directories in the results.
+     *
+     * @default false
+     */
+    onlyDirectories?: boolean
+    /**
+     * Follow symbolic links in the results.
+     *
+     * @default true
+     */
+    followSymbolicLinks?: boolean
+    /**
+     * Ignore files in the results.
+     *
+     * @default []
+     */
+    ignore?: string[]
+    /**
+     * Include files and directories that start with a dot like `.gitignore`.
+     *
+     * @default true
+     */
+    dot?: boolean
+    /**
+     * Whether to automatically expand directory patterns.
+     *
+     * Important to disable if migrating from [`fast-glob`](https://github.com/mrmlnc/fast-glob).
+     *
+     * @default true
+     */
+    expandDirectories?: boolean
+    /**
+     * Enables support for extglobs, like `+(pattern)`.
+     *
+     * @default true
+     */
+    extglob?: boolean
+    /**
+     * Maximum directory depth to crawl.
+     * @default Infinity
+     */
+    deep?: number
+  }): Promise<Uri[]>
 }
 
 /**
@@ -231,4 +298,55 @@ export enum FileSystemProviderErrorCode {
   NoPermissions = 'NoPermissions',
   Unavailable = 'Unavailable',
   Unknown = 'Unknown',
+}
+
+/**
+ * A relative pattern is a helper to construct glob patterns that are matched
+ * relatively to a base file path. The base path can either be an absolute file
+ * path as string or uri or a {@link WorkspaceFolder workspace folder}, which is the
+ * preferred way of creating the relative pattern.
+ */
+export class RelativePattern {
+  /**
+   * A base file path to which this pattern will be matched against relatively. The
+   * file path must be absolute, should not have any trailing path separators and
+   * not include any relative segments (`.` or `..`).
+   */
+  baseUri: Uri
+
+  /**
+   * A file glob pattern like `*.{ts,js}` that will be matched on file paths
+   * relative to the base path.
+   *
+   * Example: Given a base of `/home/work/folder` and a file path of `/home/work/folder/index.js`,
+   * the file glob pattern will match on `index.js`.
+   */
+  pattern: string
+
+  /**
+   * Creates a new relative pattern object with a base file path and pattern to match. This pattern
+   * will be matched on file paths relative to the base.
+   *
+   * Example:
+   * ```ts
+   * const folder = vscode.workspace.workspaceFolders?.[0];
+   * if (folder) {
+   *
+   *   // Match any TypeScript file in the root of this workspace folder
+   *   const pattern1 = new vscode.RelativePattern(folder, '*.ts');
+   *
+   *   // Match any TypeScript file in `someFolder` inside this workspace folder
+   *   const pattern2 = new vscode.RelativePattern(folder, 'someFolder/*.ts');
+   * }
+   * ```
+   *
+   * @param base A base to which this pattern will be matched against relatively. It is recommended
+   * to pass in a {@link WorkspaceFolder workspace folder} if the pattern should match inside the workspace.
+   * Otherwise, a uri or string should only be used if the pattern is for a file path outside the workspace.
+   * @param pattern A file glob pattern like `*.{ts,js}` that will be matched on paths relative to the base.
+   */
+  constructor(base: Uri, pattern: string) {
+    this.baseUri = base
+    this.pattern = pattern
+  }
 }

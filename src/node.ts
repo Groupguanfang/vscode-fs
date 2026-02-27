@@ -31,9 +31,10 @@ function joinPath(basePath: string, ...segments: string[]): string {
 }
 
 export async function createNodeFileSystem(): Promise<FileSystem> {
-  const [fs, trash] = await Promise.all([
+  const [fs, trash, glob] = await Promise.all([
     import('node:fs'),
     import('trash').then(m => m.default),
+    import('tinyglobby').then(m => m.glob),
   ])
 
   async function resolveFileType(path: string): Promise<{ type: FileType, stats: import('node:fs').Stats }> {
@@ -90,6 +91,10 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
       return
     }
     throw createFileSystemError(`Unsupported file type: ${sourcePath}`, FileSystemProviderErrorCode.Unknown)
+  }
+
+  function pathToUris(pathToUris: string[]): URI[] {
+    return pathToUris.map(path => URI.file(path))
   }
 
   return {
@@ -181,6 +186,23 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
       catch {
         return false
       }
+    },
+    glob: async (pattern, options) => {
+      return pathToUris(
+        await glob(pattern.pattern, {
+          absolute: true,
+          cwd: pattern.baseUri.fsPath,
+          onlyFiles: options?.onlyFiles,
+          onlyDirectories: options?.onlyDirectories,
+          followSymbolicLinks: options?.followSymbolicLinks,
+          ignore: options?.ignore,
+          dot: options?.dot,
+          expandDirectories: options?.expandDirectories,
+          extglob: options?.extglob,
+          deep: options?.deep,
+          fs,
+        }),
+      )
     },
   }
 }
