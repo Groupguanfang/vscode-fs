@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.0.4
+
+### Patch Changes
+
+- 3eab464: feat: add glob function
+
 ## 0.0.3
 
 ### Patch Changes
