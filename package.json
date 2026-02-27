@@ -44,7 +44,8 @@
   "scripts": {
     "build": "tsdown --dts --format esm,cjs src/index.ts",
     "test": "vitest --coverage --ui",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prepublishOnly": "pnpm build"
   },
   "peerDependencies": {
     "vscode-uri": "^3.1.0"
