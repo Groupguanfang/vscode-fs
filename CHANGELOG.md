@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.0.6
+
+### Patch Changes
+
+- befcefc: feat: add isDisposed property in file watcher
+
 ## 0.0.5
 
 ### Patch Changes
