@@ -1,4 +1,5 @@
-import type { FileSystem, FileSystemWatcher } from './types'
+import type { FSWatcher } from 'chokidar'
+import type { Disposable, FileSystem, FileSystemWatcher } from './types'
 import { URI, Utils } from 'vscode-uri'
 import { createFileSystemError, toFileSystemError } from './error'
 import { FileSystemError, FileSystemProviderErrorCode, FileType } from './types'
@@ -212,34 +213,67 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
 
       return new Promise<FileSystemWatcher>((resolve) => {
         watcher.on('ready', () => {
-          const onDidCreateListeners = new Set<((e: URI) => unknown)>()
-          const onDidChangeListeners = new Set<(e: URI) => unknown>()
-          const onDidDeleteListeners = new Set<(e: URI) => unknown>()
+          const fileSystemWatcher = new NodeFileSystemWatcherImpl(watcher, options)
 
-          if (options?.ignoreChangeEvents !== true) watcher.on('add', path => onDidCreateListeners.forEach(listener => listener(URI.file(path))))
-          if (options?.ignoreChangeEvents !== true) watcher.on('change', path => onDidChangeListeners.forEach(listener => listener(URI.file(path))))
-          if (options?.ignoreDeleteEvents !== true) watcher.on('unlink', path => onDidDeleteListeners.forEach(listener => listener(URI.file(path))))
+          if (options?.ignoreChangeEvents !== true) watcher.on('add', path => fileSystemWatcher.onDidCreateListeners.forEach(listener => listener(URI.file(path))))
+          if (options?.ignoreChangeEvents !== true) watcher.on('change', path => fileSystemWatcher.onDidChangeListeners.forEach(listener => listener(URI.file(path))))
+          if (options?.ignoreDeleteEvents !== true) watcher.on('unlink', path => fileSystemWatcher.onDidDeleteListeners.forEach(listener => listener(URI.file(path))))
 
-          resolve({
-            ignoreChangeEvents: options?.ignoreChangeEvents ?? false,
-            ignoreCreateEvents: options?.ignoreCreateEvents ?? false,
-            ignoreDeleteEvents: options?.ignoreDeleteEvents ?? false,
-            onDidCreate: (listener) => {
-              onDidCreateListeners.add(listener)
-              return { dispose: () => onDidCreateListeners.delete(listener) }
-            },
-            onDidChange: (listener) => {
-              onDidChangeListeners.add(listener)
-              return { dispose: () => onDidChangeListeners.delete(listener) }
-            },
-            onDidDelete: (listener) => {
-              onDidDeleteListeners.add(listener)
-              return { dispose: () => onDidDeleteListeners.delete(listener) }
-            },
-            dispose: () => watcher.close(),
-          })
+          resolve(fileSystemWatcher)
         })
       })
     },
+  }
+}
+
+class NodeFileSystemWatcherImpl implements FileSystemWatcher {
+  constructor(
+    private readonly watcher: FSWatcher,
+    private readonly options: Parameters<FileSystem['createWatcher']>[1],
+  ) {}
+
+  get ignoreChangeEvents(): boolean {
+    return this.options?.ignoreChangeEvents ?? false
+  }
+
+  get ignoreCreateEvents(): boolean {
+    return this.options?.ignoreCreateEvents ?? false
+  }
+
+  get ignoreDeleteEvents(): boolean {
+    return this.options?.ignoreDeleteEvents ?? false
+  }
+
+  get isDisposed(): boolean {
+    return this.watcher.closed
+  }
+
+  public readonly onDidCreateListeners = new Set<((e: URI) => unknown)>()
+  public readonly onDidChangeListeners = new Set<(e: URI) => unknown>()
+  public readonly onDidDeleteListeners = new Set<(e: URI) => unknown>()
+
+  onDidCreate(listener: (e: URI) => unknown): Disposable {
+    this.onDidCreateListeners.add(listener)
+    return {
+      dispose: () => this.onDidCreateListeners.delete(listener),
+    }
+  }
+
+  onDidChange(listener: (e: URI) => unknown): Disposable {
+    this.onDidChangeListeners.add(listener)
+    return {
+      dispose: () => this.onDidChangeListeners.delete(listener),
+    }
+  }
+
+  onDidDelete(listener: (e: URI) => unknown): Disposable {
+    this.onDidDeleteListeners.add(listener)
+    return {
+      dispose: () => this.onDidDeleteListeners.delete(listener),
+    }
+  }
+
+  dispose(): void {
+    this.watcher.close()
   }
 }

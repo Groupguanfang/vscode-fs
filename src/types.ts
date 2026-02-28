@@ -282,6 +282,11 @@ export interface FileSystemWatcher extends Disposable {
   readonly ignoreDeleteEvents: boolean
 
   /**
+   * true if this file system watcher has been disposed.
+   */
+  readonly isDisposed: boolean
+
+  /**
    * An event which fires on file/folder creation.
    */
   onDidCreate(listener: (e: Uri) => unknown): Disposable
