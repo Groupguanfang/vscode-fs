@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      chokidar:
+        specifier: ^5.0.0
+        version: 5.0.0
       tinyglobby:
         specifier: ^0.2.15
         version: 0.2.15
@@ -713,6 +716,10 @@ packages:
 
   chardet@2.1.1:
     resolution: {integrity: sha512-PsezH1rqdV9VvyNhxxOW32/d75r01NY7TQCmOqomRo15ZSOKbpTFVsfjghxo6JloQUCGnH4k1LGu0R4yCLlWQQ==, tarball: https://registry.npmjs.org/chardet/-/chardet-2.1.1.tgz}
+
+  chokidar@5.0.0:
+    resolution: {integrity: sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==, tarball: https://registry.npmjs.org/chokidar/-/chokidar-5.0.0.tgz}
+    engines: {node: '>= 20.19.0'}
 
   chunkify@5.0.0:
     resolution: {integrity: sha512-G8dj/3/Gm+1yL4oWSdwIxihZWFlgC4V2zYtIApacI0iPIRKBHlBGOGAiDUBZgrj4H8MBA8g8fPFwnJrWF3wl7Q==, tarball: https://registry.npmjs.org/chunkify/-/chunkify-5.0.0.tgz}
@@ -1766,6 +1773,10 @@ packages:
   read-yaml-file@1.1.0:
     resolution: {integrity: sha512-VIMnQi/Z4HT2Fxuwg5KrY174U1VdUIASQVWXXyqtNRtxSr9IYkn1rsI6Tb6HsrHCmB7gVpNwX6JxPTHcH6IoTA==, tarball: https://registry.npmjs.org/read-yaml-file/-/read-yaml-file-1.1.0.tgz}
     engines: {node: '>=6'}
+
+  readdirp@5.0.0:
+    resolution: {integrity: sha512-9u/XQ1pvrQtYyMpZe7DXKv2p5CNvyVwzUB6uhLAnQwHMSgKMBR62lc7AHljaeteeHXn11XTAaLLUVZYVZyuRBQ==, tarball: https://registry.npmjs.org/readdirp/-/readdirp-5.0.0.tgz}
+    engines: {node: '>= 20.19.0'}
 
   refa@0.12.1:
     resolution: {integrity: sha512-J8rn6v4DBb2nnFqkqwy6/NnTYMcgLA+sLr0iIO41qpv0n+ngb7ksag2tMRl0inb1bbO/esUwzW1vbJi7K0sI0g==, tarball: https://registry.npmjs.org/refa/-/refa-0.12.1.tgz}
@@ -2878,6 +2889,10 @@ snapshots:
   character-entities@2.0.2: {}
 
   chardet@2.1.1: {}
+
+  chokidar@5.0.0:
+    dependencies:
+      readdirp: 5.0.0
 
   chunkify@5.0.0: {}
 
@@ -4050,6 +4065,8 @@ snapshots:
       js-yaml: 3.14.2
       pify: 4.0.1
       strip-bom: 3.0.0
+
+  readdirp@5.0.0: {}
 
   refa@0.12.1:
     dependencies:

@@ -1,4 +1,4 @@
-import type { FileSystem } from './types'
+import type { FileSystem, FileSystemWatcher } from './types'
 import { URI, Utils } from 'vscode-uri'
 import { createFileSystemError, toFileSystemError } from './error'
 import { FileSystemError, FileSystemProviderErrorCode, FileType } from './types'
@@ -31,10 +31,11 @@ function joinPath(basePath: string, ...segments: string[]): string {
 }
 
 export async function createNodeFileSystem(): Promise<FileSystem> {
-  const [fs, trash, glob] = await Promise.all([
+  const [fs, trash, glob, watch] = await Promise.all([
     import('node:fs'),
     import('trash').then(m => m.default),
     import('tinyglobby').then(m => m.glob),
+    import('chokidar').then(m => m.watch),
   ])
 
   async function resolveFileType(path: string): Promise<{ type: FileType, stats: import('node:fs').Stats }> {
@@ -203,6 +204,42 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
           fs,
         }),
       )
+    },
+    createWatcher: async (pattern, options) => {
+      const watcher = watch(pattern.pattern, {
+        cwd: pattern.baseUri.fsPath,
+      })
+
+      return new Promise<FileSystemWatcher>((resolve) => {
+        watcher.on('ready', () => {
+          const onDidCreateListeners = new Set<((e: URI) => unknown)>()
+          const onDidChangeListeners = new Set<(e: URI) => unknown>()
+          const onDidDeleteListeners = new Set<(e: URI) => unknown>()
+
+          if (options?.ignoreChangeEvents !== true) watcher.on('add', path => onDidCreateListeners.forEach(listener => listener(URI.file(path))))
+          if (options?.ignoreChangeEvents !== true) watcher.on('change', path => onDidChangeListeners.forEach(listener => listener(URI.file(path))))
+          if (options?.ignoreDeleteEvents !== true) watcher.on('unlink', path => onDidDeleteListeners.forEach(listener => listener(URI.file(path))))
+
+          resolve({
+            ignoreChangeEvents: options?.ignoreChangeEvents ?? false,
+            ignoreCreateEvents: options?.ignoreCreateEvents ?? false,
+            ignoreDeleteEvents: options?.ignoreDeleteEvents ?? false,
+            onDidCreate: (listener) => {
+              onDidCreateListeners.add(listener)
+              return { dispose: () => onDidCreateListeners.delete(listener) }
+            },
+            onDidChange: (listener) => {
+              onDidChangeListeners.add(listener)
+              return { dispose: () => onDidChangeListeners.delete(listener) }
+            },
+            onDidDelete: (listener) => {
+              onDidDeleteListeners.add(listener)
+              return { dispose: () => onDidDeleteListeners.delete(listener) }
+            },
+            dispose: () => watcher.close(),
+          })
+        })
+      })
     },
   }
 }
