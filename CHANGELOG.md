@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.0.5
+
+### Patch Changes
+
+- d8eb2fe: feat: add createWatcher method
+
 ## 0.0.4
 
 ### Patch Changes
