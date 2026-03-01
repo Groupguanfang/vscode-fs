@@ -255,6 +255,14 @@ export interface FileSystem {
    * @returns A writer for the file.
    */
   createWritableStream(uri: Uri): Promise<WritableStream<Uint8Array>>
+
+  /**
+   * Create a readable stream for a file.
+   *
+   * @param uri The uri of the file to read from.
+   * @returns A readable stream for the file.
+   */
+  createReadableStream(uri: Uri): Promise<ReadableStream<Uint8Array>>
 }
 
 export interface Disposable {

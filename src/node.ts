@@ -228,6 +228,10 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
       const writableStream = fs.createWriteStream(uri.fsPath)
       return stream.Writable.toWeb(writableStream)
     },
+    createReadableStream: async (uri) => {
+      const readableStream = fs.createReadStream(uri.fsPath)
+      return stream.Readable.toWeb(readableStream) as ReadableStream<Uint8Array>
+    },
   }
 }
 
