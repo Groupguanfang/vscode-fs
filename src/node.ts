@@ -32,11 +32,12 @@ function joinPath(basePath: string, ...segments: string[]): string {
 }
 
 export async function createNodeFileSystem(): Promise<FileSystem> {
-  const [fs, trash, glob, watch] = await Promise.all([
+  const [fs, trash, glob, watch, stream] = await Promise.all([
     import('node:fs'),
     import('trash').then(m => m.default),
     import('tinyglobby').then(m => m.glob),
     import('chokidar').then(m => m.watch),
+    import('node:stream'),
   ])
 
   async function resolveFileType(path: string): Promise<{ type: FileType, stats: import('node:fs').Stats }> {
@@ -222,6 +223,10 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
           resolve(fileSystemWatcher)
         })
       })
+    },
+    createWritableStream: async (uri) => {
+      const writableStream = fs.createWriteStream(uri.fsPath)
+      return stream.Writable.toWeb(writableStream)
     },
   }
 }

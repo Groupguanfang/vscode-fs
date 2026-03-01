@@ -247,6 +247,14 @@ export interface FileSystem {
      */
     ignoreDeleteEvents?: boolean
   }): Promise<FileSystemWatcher>
+
+  /**
+   * Create a writer for a file.
+   *
+   * @param uri The uri of the file to write to.
+   * @returns A writer for the file.
+   */
+  createWritableStream(uri: Uri): Promise<WritableStream<Uint8Array>>
 }
 
 export interface Disposable {

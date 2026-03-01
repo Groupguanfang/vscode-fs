@@ -41,6 +41,9 @@
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">=17.0.0"
+  },
   "scripts": {
     "build": "tsdown --dts --format esm,cjs src/index.ts",
     "test": "vitest --coverage --ui",
