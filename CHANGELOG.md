@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.0.7
+
+### Patch Changes
+
+- ce010cf: feat: add createWritableStream, update node engine to >=17.0.0
+
 ## 0.0.6
 
 ### Patch Changes
