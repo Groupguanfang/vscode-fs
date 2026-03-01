@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.0.10
+
+### Patch Changes
+
+- cf818a8: fix: options?.recursive is undefined the fs.promises.rm throw error
+
 ## 0.0.9
 
 ### Patch Changes
