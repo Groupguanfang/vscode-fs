@@ -224,8 +224,12 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
         })
       })
     },
-    createWritableStream: async (uri) => {
-      const writableStream = fs.createWriteStream(uri.fsPath)
+    createWritableStream: async (uri, options) => {
+      const writableStream = fs.createWriteStream(uri.fsPath, {
+        ...options,
+        encoding: options?.encoding as NodeJS.BufferEncoding,
+        flags: options?.flags,
+      })
       return stream.Writable.toWeb(writableStream)
     },
     createReadableStream: async (uri) => {

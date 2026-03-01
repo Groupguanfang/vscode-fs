@@ -254,7 +254,20 @@ export interface FileSystem {
    * @param uri The uri of the file to write to.
    * @returns A writer for the file.
    */
-  createWritableStream(uri: Uri): Promise<WritableStream<Uint8Array>>
+  createWritableStream(uri: Uri, options?: {
+    /**
+     * The encoding to use for the file.
+     */
+    readonly encoding?: NodeJS.BufferEncoding | (string & {})
+    /**
+     * The flag to use for the file.
+     */
+    readonly flags?: WriteableFlags | (string & {})
+    /**
+     * Additional options.
+     */
+    readonly [key: string]: unknown
+  }): Promise<WritableStream<Uint8Array>>
 
   /**
    * Create a readable stream for a file.
@@ -263,6 +276,16 @@ export interface FileSystem {
    * @returns A readable stream for the file.
    */
   createReadableStream(uri: Uri): Promise<ReadableStream<Uint8Array>>
+}
+
+/**
+ * The flags to use for the file.
+ */
+export enum WriteableFlags {
+  /**
+   * Append to the file.
+   */
+  Append = 'a',
 }
 
 export interface Disposable {
