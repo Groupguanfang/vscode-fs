@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.0.9
+
+### Patch Changes
+
+- e959860: feat: add extra options for createWritableStream
+
 ## 0.0.8
 
 ### Patch Changes
