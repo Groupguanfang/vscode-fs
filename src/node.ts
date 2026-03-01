@@ -121,7 +121,7 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
     writeFile: (uri, content) => wrap(() => fs.promises.writeFile(uri.fsPath, content)),
     delete: (uri, options) => wrap(async () => {
       if (options?.useTrash) await trash(uri.fsPath)
-      else await fs.promises.rm(uri.fsPath, { recursive: options?.recursive })
+      else await fs.promises.rm(uri.fsPath, { recursive: options?.recursive ?? false })
     }),
     rename: (source, target, options) => wrap(async () => {
       if (options?.overwrite === false) await ensureTargetNotExists(target.fsPath)
