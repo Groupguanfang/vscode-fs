@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.0.8
+
+### Patch Changes
+
+- 6fd5e67: feat: add createReadableStream method
+
 ## 0.0.7
 
 ### Patch Changes
