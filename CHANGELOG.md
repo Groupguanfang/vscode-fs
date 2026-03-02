@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.1.0
+
+### Minor Changes
+
+- fc4c1fe: feat: add @types/vscode adapter
+
 ## 0.0.10
 
 ### Patch Changes
