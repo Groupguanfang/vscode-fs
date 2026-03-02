@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
+          # 不设置 registry-url！setup-node 会创建带 NODE_AUTH_TOKEN 的 .npmrc 覆盖 OIDC
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
