@@ -11,7 +11,7 @@ export async function createVSCodeFileSystem(): Promise<FileSystem> {
     createDirectory: async uri => await vscode.workspace.fs.createDirectory(uri),
     readFile: async uri => await vscode.workspace.fs.readFile(uri),
     writeFile: async (uri, content) => await vscode.workspace.fs.writeFile(uri, content),
-    delete: async uri => await vscode.workspace.fs.delete(uri),
+    delete: async (uri, options) => await vscode.workspace.fs.delete(uri, options),
     rename: async (source, target, options) => await vscode.workspace.fs.rename(source, target, options),
     copy: async (source, target, options) => await vscode.workspace.fs.copy(source, target, options),
     isDirectory: async uri => await vscode.workspace.fs.stat(uri).then(

@@ -32,9 +32,8 @@ function joinPath(basePath: string, ...segments: string[]): string {
 }
 
 export async function createNodeFileSystem(): Promise<FileSystem> {
-  const [fs, trash, glob, watch, stream] = await Promise.all([
+  const [fs, glob, watch, stream] = await Promise.all([
     import('node:fs'),
-    import('trash').then(m => m.default),
     import('tinyglobby').then(m => m.glob),
     import('chokidar').then(m => m.watch),
     import('node:stream'),
@@ -120,7 +119,7 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
     readFile: uri => wrap(() => fs.promises.readFile(uri.fsPath)),
     writeFile: (uri, content) => wrap(() => fs.promises.writeFile(uri.fsPath, content)),
     delete: (uri, options) => wrap(async () => {
-      if (options?.useTrash) await trash(uri.fsPath)
+      if (options?.useTrash === true) await import('trash').then(m => m.default).then(trash => trash(uri.fsPath))
       else await fs.promises.rm(uri.fsPath, { recursive: options?.recursive ?? false })
     }),
     rename: (source, target, options) => wrap(async () => {
