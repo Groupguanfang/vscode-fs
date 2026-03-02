@@ -8,7 +8,7 @@
   "homepage": "https://github.com/groupguanfang/vscode-fs",
   "repository": {
     "type": "git",
-    "url": "https://github.com/groupguanfang/vscode-fs"
+    "url": "git+https://github.com/groupguanfang/vscode-fs.git"
   },
   "bugs": {
     "url": "https://github.com/groupguanfang/vscode-fs/issues",
