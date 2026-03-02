@@ -26,6 +26,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+          # 不设置 registry-url，避免 setup-node 创建干扰 OIDC 的 .npmrc
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -42,7 +43,19 @@ jobs:
         with:
           commit: 'chore(release): release packages'
           title: 'chore(release): release packages'
-          # 使用 npm 发布以支持 OIDC，pnpm 不兼容 Trusted Publishing
-          publish: pnpm run ci:publish
+          # 发布改为独立步骤，确保 OIDC 环境正确传递
+          publish: echo "Publish delegated to next step"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 直接运行 npm publish 以确保 OIDC 可用
+      # 必须 unset NODE_AUTH_TOKEN，否则 setup-node 可能设置的 auth 会覆盖 OIDC
+      - name: Publish to npm
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if npm view vscode-fs@$VERSION version 2>/dev/null; then
+            echo "Already published, skipping"
+            exit 0
+          fi
+          env -u NODE_AUTH_TOKEN npm publish --provenance
