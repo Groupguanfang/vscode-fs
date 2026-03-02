@@ -1,7 +1,7 @@
 {
   "name": "vscode-fs",
   "type": "module",
-  "version": "0.0.10",
+  "version": "0.1.0",
   "description": "VSCode like simple、serializable and cross-platform file system utilities.",
   "author": "Naily Zero <zero@naily.cc> (https://naily.cc)",
   "license": "MIT",
