@@ -198,7 +198,11 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
           onlyFiles: options?.onlyFiles,
           onlyDirectories: options?.onlyDirectories,
           followSymbolicLinks: options?.followSymbolicLinks,
-          ignore: options?.ignore,
+          ignore: Array.isArray(options?.ignore)
+            ? options?.ignore
+            : options?.ignore
+              ? options?.ignore.pattern
+              : [],
           dot: options?.dot,
           expandDirectories: options?.expandDirectories,
           extglob: options?.extglob,

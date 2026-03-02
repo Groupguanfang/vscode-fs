@@ -199,7 +199,7 @@ export interface FileSystem {
      *
      * @default []
      */
-    ignore?: string[]
+    ignore?: string[] | RelativePattern
     /**
      * Include files and directories that start with a dot like `.gitignore`.
      *
