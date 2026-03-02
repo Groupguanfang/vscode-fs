@@ -16,6 +16,10 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write  # 必须，OIDC 需在 job 级别声明
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -26,7 +30,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-          # 不设置 registry-url，避免 setup-node 创建干扰 OIDC 的 .npmrc
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -48,14 +52,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 直接运行 npm publish 以确保 OIDC 可用
-      # 必须 unset NODE_AUTH_TOKEN，否则 setup-node 可能设置的 auth 会覆盖 OIDC
+      - name: Upgrade npm
+        if: steps.changesets.outputs.hasChangesets == 'false'
+        run: npm install -g npm@latest
+
       - name: Publish to npm
         if: steps.changesets.outputs.hasChangesets == 'false'
         run: |
+          rm -f $HOME/.npmrc .npmrc 2>/dev/null || true
+          unset NODE_AUTH_TOKEN
+          unset NPM_CONFIG_USERCONFIG
           VERSION=$(node -p "require('./package.json').version")
           if npm view vscode-fs@$VERSION version 2>/dev/null; then
             echo "Already published, skipping"
             exit 0
           fi
-          env -u NODE_AUTH_TOKEN npm publish --provenance
+          npm publish --provenance
