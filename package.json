@@ -8,7 +8,7 @@
   "homepage": "https://github.com/groupguanfang/vscode-fs",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/groupguanfang/vscode-fs.git"
+    "url": "https://github.com/Groupguanfang/vscode-fs"
   },
   "bugs": {
     "url": "https://github.com/groupguanfang/vscode-fs/issues",
@@ -56,8 +56,7 @@
     "build": "tsdown --dts --format esm,cjs src/index.ts src/vscode.ts --deps.neverBundle vscode",
     "test": "vitest --coverage --ui",
     "lint": "eslint .",
-    "prepublishOnly": "pnpm build",
-    "ci:publish": "node scripts/ci-publish.mjs"
+    "prepublishOnly": "pnpm build"
   },
   "peerDependencies": {
     "vscode-uri": "^3.1.0"

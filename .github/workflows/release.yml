@@ -16,10 +16,6 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-      id-token: write # 必须，OIDC 需在 job 级别声明
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -27,12 +23,11 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '24'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: 24.x
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -49,21 +44,7 @@ jobs:
         with:
           commit: 'chore(release): release packages'
           title: 'chore(release): release packages'
-          # 发布改为独立步骤，确保 OIDC 环境正确传递
-          publish: echo "Publish delegated to next step"
+          publish: pnpm changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upgrade npm
-        if: steps.changesets.outputs.hasChangesets == 'false'
-        run: npm install -g npm@latest
-
-      - name: Publish to npm
-        if: steps.changesets.outputs.hasChangesets == 'false'
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          if npm view vscode-fs@$VERSION version 2>/dev/null; then
-            echo "Already published, skipping"
-            exit 0
-          fi
-          npm publish --provenance
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
