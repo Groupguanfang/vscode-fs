@@ -23,11 +23,10 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          # Trusted Publishing (OIDC) 需要 Node 22.14.0+
-          node-version: 24
-          registry-url: 'https://registry.npmjs.org'
+          node-version: '24.x'
+
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
@@ -47,5 +46,3 @@ jobs:
           publish: pnpm changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # 首次发布必须使用 NPM_TOKEN，包发布成功后可在 npm 配置 Trusted Publisher 后移除此项
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
