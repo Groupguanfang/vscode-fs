@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.1.1
+
+### Patch Changes
+
+- cbe8eeb: fix: fix `trash` package no allow bundle
+
 ## 0.1.0
 
 ### Minor Changes
