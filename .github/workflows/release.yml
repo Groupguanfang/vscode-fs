@@ -19,7 +19,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      id-token: write  # 必须，OIDC 需在 job 级别声明
+      id-token: write # 必须，OIDC 需在 job 级别声明
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
