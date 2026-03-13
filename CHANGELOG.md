@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.1.3
+
+### Patch Changes
+
+- 4943e7b: feat: add ignore option in watcher
+
 ## 0.1.2
 
 ### Patch Changes
