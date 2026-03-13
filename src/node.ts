@@ -217,9 +217,9 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
         watcher.on('ready', () => {
           const fileSystemWatcher = new NodeFileSystemWatcherImpl(watcher, options)
 
-          if (options?.ignoreChangeEvents !== true) watcher.on('add', path => fileSystemWatcher.onDidCreateListeners.forEach(listener => listener(URI.file(path))))
-          if (options?.ignoreChangeEvents !== true) watcher.on('change', path => fileSystemWatcher.onDidChangeListeners.forEach(listener => listener(URI.file(path))))
-          if (options?.ignoreDeleteEvents !== true) watcher.on('unlink', path => fileSystemWatcher.onDidDeleteListeners.forEach(listener => listener(URI.file(path))))
+          if (options?.ignoreChangeEvents !== true) watcher.on('add', path => fileSystemWatcher.onDidCreateListeners.forEach(listener => listener(Utils.resolvePath(pattern.baseUri, path))))
+          if (options?.ignoreChangeEvents !== true) watcher.on('change', path => fileSystemWatcher.onDidChangeListeners.forEach(listener => listener(Utils.resolvePath(pattern.baseUri, path))))
+          if (options?.ignoreDeleteEvents !== true) watcher.on('unlink', path => fileSystemWatcher.onDidDeleteListeners.forEach(listener => listener(Utils.resolvePath(pattern.baseUri, path))))
 
           resolve(fileSystemWatcher)
         })
