@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.1.2
+
+### Patch Changes
+
+- 93e8602: fix: fix chunk
+
 ## 0.1.1
 
 ### Patch Changes
