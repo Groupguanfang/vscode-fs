@@ -1,5 +1,11 @@
 # vscode-fs
 
+## 0.1.4
+
+### Patch Changes
+
+- 7f45dd5: fix: fix watcher file uri
+
 ## 0.1.3
 
 ### Patch Changes
