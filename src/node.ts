@@ -211,9 +211,7 @@ export async function createNodeFileSystem(): Promise<FileSystem> {
       )
     },
     createWatcher: async (pattern, options) => {
-      const watcher = watch(pattern.pattern, {
-        cwd: pattern.baseUri.fsPath,
-      })
+      const watcher = watch(pattern.pattern, { cwd: pattern.baseUri.fsPath, ignored: options?.ignore })
 
       return new Promise<FileSystemWatcher>((resolve) => {
         watcher.on('ready', () => {

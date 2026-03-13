@@ -246,6 +246,12 @@ export interface FileSystem {
      * @default false
      */
     ignoreDeleteEvents?: boolean
+    /**
+     * Ignore files in the results.
+     *
+     * @default []
+     */
+    ignore?: (string | RegExp)[]
   }): Promise<FileSystemWatcher>
 
   /**
